@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Para a Geovanna 🎂</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FBE9EE; --ink:#3A1636; --muted:#7A5276; --card:#FFF8F5; --accent:#E8366B; --accent-ink:#fff; --line:#EBC6D3; --gold:#F2A93B;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#22101F;--ink:#FCE8EF;--muted:#C9A0BC;--card:#341A30;--accent:#FF6B97;--accent-ink:#2A0F20;--line:#5A3355;--gold:#F6BC5C}}
+:root[data-theme="dark"]{--bg:#22101F;--ink:#FCE8EF;--muted:#C9A0BC;--card:#341A30;--accent:#FF6B97;--accent-ink:#2A0F20;--line:#5A3355;--gold:#F6BC5C}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;line-height:1.5;display:flex;align-items:center;justify-content:center;padding:20px}
+h1,h2{font-family:'Fraunces',Georgia,serif;line-height:1.15;margin:0 0 12px}
+h1{font-size:clamp(2.2rem,9vw,3.4rem);font-weight:700}
+h2{font-size:clamp(1.5rem,6vw,2rem);font-weight:500}
+p{margin:0 0 16px;color:var(--muted);max-width:46ch}
+main{width:100%;max-width:480px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:24px;padding:28px 24px;box-shadow:0 18px 40px -22px var(--accent)}
+.screen{display:none}.screen.on{display:block;animation:in .35s ease}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--accent);color:var(--accent-ink);border:0;border-radius:999px;padding:14px 26px;font-weight:700;font-size:1rem}
+.btn:active{transform:scale(.97)}
+.opt{display:block;width:100%;text-align:left;background:transparent;color:var(--ink);border:1.5px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:10px;font-size:1rem}
+.opt:hover,.opt:focus-visible{border-color:var(--accent);outline:none}
+.opt.sel{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}
+input[type=text],input[type=password]{width:100%;font:inherit;color:var(--ink);background:transparent;border:1.5px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:14px}
+input:focus-visible,.btn:focus-visible,.link:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.bar{display:flex;gap:6px;margin-bottom:22px}
+.bar i{flex:1;height:5px;border-radius:5px;background:var(--line)}
+.bar i.done{background:var(--accent)}
+.link{background:none;border:0;color:var(--accent);text-decoration:underline;padding:8px 0;font-size:.95rem}
+.lock{font-size:3rem;margin-bottom:8px}
+.err{color:var(--accent);min-height:1.4em;margin:-4px 0 10px;font-size:.92rem}
+.shake{animation:shake .4s}
+@keyframes shake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
+.note{background:color-mix(in srgb,var(--gold) 22%,transparent);border-radius:16px;padding:16px;margin-top:16px;color:var(--ink)}
+.note b{font-family:'Fraunces',Georgia,serif;font-size:1.3rem}
+.opt.wrong{border-color:var(--accent);opacity:.55;text-decoration:line-through}
+.qmsg{min-height:3em;margin:0 0 12px;padding:0;color:var(--ink);font-weight:500}
+.qmsg:not(:empty){background:color-mix(in srgb,var(--gold) 24%,transparent);border-radius:14px;padding:12px 14px}
+.hide{display:none}
+@media (prefers-reduced-motion:reduce){.screen.on,.shake{animation:none}}
+</style>
+</head>
+<body>
+<main>
+  <section class="screen card on" id="intro">
+    <h1>Oi, Geovanna!</h1>
+    <p>Tem uma surpresa te esperando. Antes de chegar nela, responde algumas perguntinhas. Não existe resposta errada.</p>
+    <button class="btn" id="start">Começar</button>
+  </section>
+
+  <section class="screen card" id="quiz">
+    <div class="bar" id="bar"></div>
+    <h2 id="q"></h2>
+    <div class="qmsg" id="qmsg" role="status"></div>
+    <div id="answers"></div>
+  </section>
+
+  <section class="screen card" id="lock">
+    <div class="lock">🔒</div>
+    <h2>Seu presente está trancado</h2>
+    <p>Digite a senha para abrir.</p>
+    <input type="password" id="pw" placeholder="Senha" autocomplete="off" aria-label="Senha">
+    <div class="err" id="err" role="alert"></div>
+    <button class="btn" id="open">Abrir presente</button><br>
+    <button class="link" id="forgot">Esqueci a senha</button>
+    <div class="note hide" id="note">
+      <b>Calma, Geovanna 😉</b><br>
+      Você vai receber a senha no dia 18.
+    </div>
+  </section>
+
+  <section class="screen card" id="gift">
+    <div class="lock">🎁</div>
+    <h2>Feliz aniversário, Geovanna!</h2>
+    <p id="giftText">Escreva aqui a sua mensagem ou o seu presente.</p>
+  </section>
+</main>
+
+<script>
+// ===== EDITE AQUI =====
+const SENHA = "geo18";               // senha secreta (ela não sabe)
+const MENSAGEM_PRESENTE = "Escreva aqui a sua mensagem ou o seu presente.";
+const PERGUNTAS = [
+  { q: "Que dia é o seu aniversário?", o: [
+    { t: "Dia 18", ok: true },
+    { t: "Dia 31 de fevereiro", m: "Esse dia não existe, Geovanna 😂 Nem pro bolo." },
+    { t: "Quando o Wi-Fi cair", m: "Mal começou e já tá enrolando! Tenta de novo 😅" },
+    { t: "Todo dia, né?", m: "Eu gosto da energia, mas não. Uma vez por ano, só 🎂" } ] },
+  { q: "Quem é a pessoa mais incrível deste site?", o: [
+    { t: "Você, Geovanna", ok: true },
+    { t: "O Kaio", m: "Gostei da confiança dele, mas não foi dessa vez 😂" },
+    { t: "O Wi-Fi", m: "O Wi-Fi nem tá aparecendo nessa festa 📶" },
+    { t: "O gato do vizinho", m: "Ele é fofo, mas não ganhou convite 🐱" } ] },
+  { q: "Qual a idade mínima pra comer bolo no aniversário?", o: [
+    { t: "Nenhuma, bolo não discrimina", ok: true },
+    { t: "18 anos", m: "Quem te contou essa mentira? Denuncia! 🍰" },
+    { t: "Só com autorização do pai", m: "Se for assim, tô perdido também 😂" },
+    { t: "Depende do recheio", m: "Quase! Mas a resposta certa é mais justa que isso." } ] },
+  { q: "O que você faz quando ganha um presente?", o: [
+    { t: "Abre na hora", m: "Calma, o suspense faz parte 😏 Tenta outra." },
+    { t: "Finge que não está curiosa", m: "Mentira, você já tá com o olho no presente 👀" },
+    { t: "Chacoalha a caixa", m: "É uma das respostas certas... mas tem uma melhor 😂" },
+    { t: "Tudo isso", ok: true } ] },
+  { q: "O que mais te faz rir?", texto: true }
+];
+// ======================
+
+const $ = id => document.getElementById(id);
+let i = 0;
+function show(id){ document.querySelectorAll('.screen').forEach(s => s.classList.remove('on')); $(id).classList.add('on'); }
+
+function renderBar(){ $('bar').innerHTML = PERGUNTAS.map((_, n) => '<i class="' + (n < i ? 'done' : '') + '"></i>').join(''); }
+function next(){ i++; i < PERGUNTAS.length ? render() : show('lock'); }
+function render(){
+  const p = PERGUNTAS[i]; renderBar(); $('q').textContent = p.q;
+  const box = $('answers'); box.innerHTML = ''; $('qmsg').textContent = '';
+  if (p.texto) {
+    const inp = document.createElement('input'); inp.type = 'text'; inp.placeholder = 'Escreva aqui'; inp.setAttribute('aria-label', p.q);
+    const b = document.createElement('button'); b.className = 'btn'; b.textContent = 'Continuar';
+    b.onclick = next; box.append(inp, b);
+  } else {
+    p.o.forEach(op => {
+      const b = document.createElement('button'); b.className = 'opt'; b.textContent = op.t;
+      b.onclick = () => {
+        if (op.ok) { $('qmsg').textContent = ''; b.classList.add('sel'); setTimeout(next, 300); }
+        else {
+          b.classList.add('wrong'); b.disabled = true;
+          $('qmsg').textContent = op.m || 'Quase! Tenta de novo 😂';
+          const c = $('quiz'); c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake');
+        }
+      };
+      box.appendChild(b);
+    });
+  }
+}
+
+$('start').onclick = () => { show('quiz'); render(); };
+
+$('open').onclick = tryOpen;
+$('pw').addEventListener('keydown', e => { if (e.key === 'Enter') tryOpen(); });
+function tryOpen(){
+  if ($('pw').value.trim().toLowerCase() === SENHA.toLowerCase()) {
+    $('giftText').textContent = MENSAGEM_PRESENTE; show('gift');
+  } else {
+    $('err').textContent = 'Senha incorreta. Tente de novo.';
+    const c = $('lock'); c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake');
+  }
+}
+
+$('forgot').onclick = () => {
+  $('note').classList.remove('hide');
+};
+</script>
+</body>
+</html>
